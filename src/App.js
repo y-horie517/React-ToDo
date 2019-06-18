@@ -28,7 +28,16 @@ addTodo(){
 
   // 初期化
   this.refs.newText.value='';
+}
 
+// 削除機能
+deleteTodo(i) {
+  // 削除
+  this.state.todo.splice(i, 1);
+  // 保存
+  this.setState({
+    todo : this.state.todo
+  });
 }
 
 
@@ -38,7 +47,8 @@ addTodo(){
         <h1>TODOアプリ</h1>
         <ul>
           {this.state.todo.map( (todo, i) => {
-            return <li key={i}> <input type="button" value="x" /> {todo.title}</li>
+            return <li key={i}> <input type="button" value="x" 
+            onClick={() => this.deleteTodo(i)}/> {todo.title}</li>
           })}
         </ul>
         <input type="text" ref="newText"/>
