@@ -1,11 +1,22 @@
 .box{
   width: 90%;
-  /* background-color: lightslategrey; */
   margin: 0 auto;
 }
 
-.listtext{
-  font-size: 20px;
+.list-textbox{
+  height: 18px;
+  width: 300px;
+  font-size: 16px;
+}
+
+.list-text{
+  font-size: 10px;
+  height: 40px;
+}
+
+ul{
+  padding-top: 20px;
+  background-color: whitesmoke;
 }
 
 .App {

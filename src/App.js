@@ -1,95 +1,94 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-// import styles from './App.css';
-
-// CodePenでの表示用
-const Component = React.Component;
-
-// Listコンポーネントの作成
-function List(props){
-  return (
-    <ul>
-      {props.todo.map( (todo, i) => {
-        return <li key={i} className="listtext"> <input type="button" value="☓"
-                              onClick={() => props.deleteTodo(i)}/> {todo.title}</li>
-      })}
-    </ul>
-  )
-};
-
-// Inputコンポーネントの作成
-class Input extends Component {
-  constructor(props){
-    super(props);
-    this.addTodo = this.addTodo.bind(this);
-  }
-  addTodo(){
-    this.props.addTodo(this.refs.newText.value);
-    this.refs.newText.value='';
-  }
-  render() {
-    return (
-      <div>
-          <input type="text" ref="newText"/>
-          <input type="button" value="追加" onClick={this.addTodo}/>
-      </div>
-    )
-  }
-};
-
+import React, { Component } from 'react';
+ 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      todo: [
-       { title: 'JavaScript覚える' } ,
-       { title: 'jQuery覚える' } ,
-       { title: 'ES2015覚える' } ,
-       { title: 'React覚える' }
-      ]
+      todo: []
     };
+ 
     this.addTodo = this.addTodo.bind(this);
-    this.deleteTodo = this.deleteTodo.bind(this);
   }
+  
+  // 初期値の設定
+  componentWillMount(){
+    this.fetchResponse();
+  }
+  
+  // リストの更新
+  fetchResponse(){
+    fetch('http://localhost:3001/todos')
+    .then( res => res.json() )
+    .then( res => {
+      this.setState({
+        todo : res
+      });
+    })
+  }
+  
   // 新規追加
-  addTodo(value) {
-    // 追加
-    this.state.todo.push({
-      title: value
-    });
-    // 保存
-    this.setState({
-      todo : this.state.todo
-    });
+  addTodo() {
+    fetch('http://localhost:3001/todos', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: this.refs.newText.value
+      }),
+      headers: new Headers({ 'Content-type' : 'application/json' })
+    }).then( () => {
+      // リストの更新
+      this.fetchResponse();
+      // 値の初期化
+      this.refs.newText.value = "";
+    })
   }
- 
+  
+  // 編集機能
+  updateTodo(todo) {
+    fetch(`http://localhost:3001/todos/${todo.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id: todo.id,
+        title: todo.title
+      }),
+      headers: new Headers({ 'Content-type' : 'application/json' })
+    })
+  }
+  
   // 削除機能
-  deleteTodo(i) {
-    // 削除
-    this.state.todo.splice(i, 1);
-    // 保存
-    this.setState({
-      todo : this.state.todo
-    });
+  deleteTodo(todo) {
+    fetch(`http://localhost:3001/todos/${todo.id}`, {
+      method: 'DELETE'
+    }).then( () => {
+      const todos = this.state.todo.filter(item => item.id !== todo.id)
+      // 保存
+      this.setState({
+        todo : todos
+      });
+    })
   }
- 
+
   render() {
     return (
       <div className="box">
         <h1>TODOアプリ</h1>
-         <h5>やるべきことを入力してリストに追加してください</h5>
-        <Input addTodo={this.addTodo} />
-        <List todo={this.state.todo} deleteTodo={this.deleteTodo}/>
+        <p>テキスト入力後にボタンを押してリストへ登録</p>
+        <input type="text" ref="newText" className="list-textbox"/>
+        <input type="button" value="追加" onClick={this.addTodo}/>
+        <ul>
+          {this.state.todo.map( todo => (
+            <li key={todo.id} className="list-text">
+              <input type="text" className="list-textbox"
+                defaultValue={todo.title}
+                onChange={e => todo.title = e.target.value}
+              />
+              <input type="button" value="更新" onClick={() => this.updateTodo(todo)}/>
+              <input type="button" value="削除" onClick={() => this.deleteTodo(todo)}/>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
 }
-// CodePenでの表示では不要なのコメントアウト
-export default App;
-
-// CodePenで表示を行う用の処理
-ReactDOM.render(
-	<App />,
-	document.getElementById('root')
-);
+  
+export default App;  
