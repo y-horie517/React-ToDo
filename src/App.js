@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      todo: [
+        {title: 'JavaScriptを覚える'},
+        {title: 'React覚える'},
+        {title: 'JQuery覚える'},
+        {title: 'Railsを覚える'}
+      ]
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>TODOアプリ</h1>
+        <ul>
+          {this.state.todo.map( (todo, i) => {
+            return <li key={i}> <input type="button" value="x" /> {todo.title}</li>
+          })}
+        </ul>
+        <input type="text" />
+        <input type="button" value="追加" />
+      </div>
+    );
+  }
 }
 
 export default App;
