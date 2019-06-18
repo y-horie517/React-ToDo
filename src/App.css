@@ -1,3 +1,13 @@
+.box{
+  width: 90%;
+  /* background-color: lightslategrey; */
+  margin: 0 auto;
+}
+
+.listtext{
+  font-size: 20px;
+}
+
 .App {
   text-align: center;
 }

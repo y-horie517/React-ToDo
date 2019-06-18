@@ -1,6 +1,7 @@
-// CodePenでの表示では不要なのコメントアウト
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+// import styles from './App.css';
 
 // CodePenでの表示用
 const Component = React.Component;
@@ -10,7 +11,7 @@ function List(props){
   return (
     <ul>
       {props.todo.map( (todo, i) => {
-        return <li key={i}> <input type="button" value="☓"
+        return <li key={i} className="listtext"> <input type="button" value="☓"
                               onClick={() => props.deleteTodo(i)}/> {todo.title}</li>
       })}
     </ul>
@@ -75,10 +76,11 @@ class App extends Component {
  
   render() {
     return (
-      <div>
+      <div className="box">
         <h1>TODOアプリ</h1>
-        <List todo={this.state.todo} deleteTodo={this.deleteTodo}/>
+         <h5>やるべきことを入力してリストに追加してください</h5>
         <Input addTodo={this.addTodo} />
+        <List todo={this.state.todo} deleteTodo={this.deleteTodo}/>
       </div>
     );
   }
